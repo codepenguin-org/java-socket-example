@@ -27,6 +27,9 @@ package org.codepenguin.java.socket.server.example;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
+
 /**
  * Utility for numbers.
  *
@@ -45,6 +48,6 @@ final class NumberUtility {
      * @return {@literal true} if the number is an integer; otherwise, {@literal false}.
      */
     static boolean isInteger(final Number number) {
-        return new BigDecimal(number.floatValue()).remainder(BigDecimal.ONE).equals(BigDecimal.ZERO);
+        return BigDecimal.valueOf(number.floatValue()).remainder(ONE).doubleValue() == ZERO.doubleValue();
     }
 }
