@@ -32,13 +32,24 @@ package org.codepenguin.java.socket.server.example;
  * @version 1.0-SNAPSHOT
  * @since 1.8
  */
-public enum ArithmeticOperator {
+enum ArithmeticOperator {
 
+    /**
+     * Addition (+).
+     */
     ADDITION('+'),
+    /**
+     * Subtraction (-).
+     */
     SUBTRACTION('-'),
+    /**
+     * Multiplication (*).
+     */
     MULTIPLICATION('*'),
-    DIVISION('/'),
-    ;
+    /**
+     * Division (/).
+     */
+    DIVISION('/');
 
     private final char symbol;
 
@@ -51,7 +62,23 @@ public enum ArithmeticOperator {
      *
      * @return Symbol.
      */
-    public char getSymbol() {
+    char getSymbol() {
         return symbol;
+    }
+
+    /**
+     * Returns the arithmetic operator of the specified symbol. The symbol must match exactly an symbol used to declare
+     * an enum constant in this type.
+     *
+     * @param symbol The symbol.
+     * @return The arithmetic operator with the specified symbol.
+     * @throws IllegalArgumentException If the symbol isn't used by any supported operator.
+     */
+    static ArithmeticOperator valueOfSymbol(char symbol) {
+        for (ArithmeticOperator operator : values())
+            if (operator.getSymbol() == symbol)
+                return operator;
+
+        throw new IllegalArgumentException("No symbol in " + ArithmeticOperator.class.getCanonicalName() + ": " + symbol);
     }
 }

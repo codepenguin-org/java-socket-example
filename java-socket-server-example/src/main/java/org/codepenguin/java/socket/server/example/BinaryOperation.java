@@ -28,10 +28,6 @@ package org.codepenguin.java.socket.server.example;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import static java.lang.String.join;
-import static java.lang.String.valueOf;
-import static org.codepenguin.java.socket.server.example.NumberUtility.isInteger;
-
 /**
  * Binary operation.
  *
@@ -50,6 +46,11 @@ final class BinaryOperation {
     private final ArithmeticOperator symbol;
     private final float secondOperand;
 
+    /**
+     * Applies the operation.
+     *
+     * @return The result of the operation.
+     */
     float apply() {
         switch (symbol) {
             case ADDITION:
@@ -62,14 +63,5 @@ final class BinaryOperation {
                 return firstOperand / secondOperand;
         }
         throw new AssertionError("Unknown symbol: " + symbol);
-    }
-
-    String print(boolean withResult) {
-        String text = join(PRINT_DELIMITER, print(firstOperand), valueOf(symbol.getSymbol()), print(secondOperand));
-        return withResult ? join(PRINT_DELIMITER, text, EQUALS, print(apply())) : text;
-    }
-
-    private String print(float f) {
-        return isInteger(f) ? valueOf((int) f) : valueOf(f);
     }
 }

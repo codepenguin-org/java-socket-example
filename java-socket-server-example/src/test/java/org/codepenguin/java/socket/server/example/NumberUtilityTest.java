@@ -29,6 +29,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for {@link NumberUtility}.
+ *
+ * @author Jorge Alfonso Garcia Espinosa
+ * @version 1.0-SNAPSHOT
+ * @since 1.8
+ */
 class NumberUtilityTest {
 
     @Test

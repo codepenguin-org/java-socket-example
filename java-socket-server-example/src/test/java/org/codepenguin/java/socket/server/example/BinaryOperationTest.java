@@ -46,17 +46,4 @@ class BinaryOperationTest {
         assertEquals(12, new BinaryOperation(3, MULTIPLICATION, 4).apply());
         assertEquals(6, new BinaryOperation(30, DIVISION, 5).apply());
     }
-
-    @Test
-    void print() {
-        assertEquals("3 + 4", new BinaryOperation(3, ADDITION, 4).print(false));
-        assertEquals("2 - 8", new BinaryOperation(2, SUBTRACTION, 8).print(false));
-        assertEquals("34.55 + 23.88", new BinaryOperation(34.55F, ADDITION, 23.88F)
-                .print(false));
-
-        assertEquals("2 + 2 = 4", new BinaryOperation(2, ADDITION, 2).print(true));
-        assertEquals("5 * 3 = 15", new BinaryOperation(5, MULTIPLICATION, 3).print(true));
-        assertEquals("3.2 * 8.9 = 28.48", new BinaryOperation(3.2F, MULTIPLICATION, 8.9F)
-                .print(true));
-    }
 }
