@@ -30,12 +30,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,23 +75,16 @@ public final class Main {
             return;
         }
 
-        try (
-                ServerSocket server = new ServerSocket(port);
-                Socket socket = server.accept();
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-        ) {
-            final BinaryOperationProtocol protocol = new BinaryOperationProtocol();
-            String input;
-            while ((input = reader.readLine()) != null) {
-                if (input.equals(protocol.getExitCommand()))
-                    break;
-
-                BinaryOperationProtocol.Response response = protocol.process(input);
-                writer.println(response);
-            }
+        try (ServerSocket server = new ServerSocket(port)) {
+            LOGGER.info("START_SERVER\t" + port);
+            //noinspection InfiniteLoopStatement
+            while (true)
+                new SocketServerThread(server.accept()).start();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, portValue, e);
+            close();
+        } finally {
+            LOGGER.info("STOP_SERVER\t" + port);
         }
     }
 
