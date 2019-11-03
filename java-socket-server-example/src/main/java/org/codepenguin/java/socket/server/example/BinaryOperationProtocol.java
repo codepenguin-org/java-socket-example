@@ -46,6 +46,8 @@ final class BinaryOperationProtocol {
     private static final String OPERATION_SEPARATOR = " ";
     private static final String EXIT_COMMAND = "QUIT";
     private static final String PROTOCOL_SEPARATOR = "\t";
+    public static final String APP_NAME = "Binary Operation Server";
+    public static final String APP_VERSION = "v.1.0-SNAPSHOT";
 
     /**
      * Processes the input.
@@ -106,6 +108,15 @@ final class BinaryOperationProtocol {
      */
     String getExitCommand() {
         return EXIT_COMMAND;
+    }
+
+    /**
+     * Gets the welcome message to send for the new connected clients.
+     *
+     * @return The welcome message.
+     */
+    String getWelcomeMessage() {
+        return join(PROTOCOL_SEPARATOR, APP_NAME, APP_VERSION);
     }
 
     private String formatOperation(final BinaryOperation operation) {

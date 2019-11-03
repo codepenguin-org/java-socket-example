@@ -69,23 +69,26 @@ class SocketServerThread extends Thread {
                 PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
-            LOGGER.info(String.join(LOG_DELIMITER, START_CLIENT_SESSION, getName()));
+            LOGGER.log(Level.INFO, "{1}{0}{2}", new Object[]{LOG_DELIMITER, START_CLIENT_SESSION, getName()});
 
             final BinaryOperationProtocol protocol = new BinaryOperationProtocol();
+            writer.println(protocol.getWelcomeMessage());
+
             String input;
             while ((input = reader.readLine()) != null) {
-                LOGGER.info(String.join(LOG_DELIMITER, INPUT, getName(), input));
+                LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}", new Object[]{LOG_DELIMITER, INPUT, getName(), input});
                 if (input.equals(protocol.getExitCommand()))
                     break;
 
                 BinaryOperationProtocol.Response response = protocol.process(input);
-                LOGGER.info(String.join(LOG_DELIMITER, OUTPUT, getName(), input, response.toString()));
+                LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}{0}{4}", new Object[]{LOG_DELIMITER, OUTPUT, getName(), input,
+                        response});
                 writer.println(response);
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, getName(), e);
         } finally {
-            LOGGER.info(String.join(LOG_DELIMITER, END_CLIENT_SESSION, getName()));
+            LOGGER.log(Level.INFO, "{1}{0}{2}", new Object[]{LOG_DELIMITER, END_CLIENT_SESSION, getName()});
         }
     }
 }

@@ -55,7 +55,7 @@ public final class Main {
      * @param args The arguments: [port]
      */
     public static void main(String[] args) {
-        CommandLine commandLine;
+        final CommandLine commandLine;
         try {
             commandLine = new DefaultParser().parse(buildOptions(), args);
         } catch (ParseException e) {
@@ -66,7 +66,7 @@ public final class Main {
 
         final String portValue = commandLine.getOptionValue(PORT_OPTION);
 
-        int port;
+        final int port;
         try {
             port = Integer.parseInt(portValue);
         } catch (NumberFormatException e) {
@@ -77,8 +77,8 @@ public final class Main {
 
         try (ServerSocket server = new ServerSocket(port)) {
             LOGGER.info("START_SERVER\t" + port);
-            //noinspection InfiniteLoopStatement
-            while (true)
+            final volatile running =true;
+            while (running)
                 new SocketServerThread(server.accept()).start();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, portValue, e);

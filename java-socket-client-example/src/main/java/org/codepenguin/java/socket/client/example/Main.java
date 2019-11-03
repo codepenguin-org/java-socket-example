@@ -25,6 +25,21 @@
 
 package org.codepenguin.java.socket.client.example;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * Main class.
  *
@@ -33,12 +48,70 @@ package org.codepenguin.java.socket.client.example;
  * @since 1.8
  */
 public final class Main {
+
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+    private static final String HOST_OPTION = "h";
+    private static final String PORT_OPTION = "p";
+    private static final int EXIT_STATUS = 1;
+
     /**
-     * Main method.
+     * Main method. Starts the client's socket connecting it to the specified host and port.
      *
-     * @param args Arguments.
+     * @param args The arguments: [host] [port].
      */
     public static void main(String[] args) {
+        final CommandLine commandLine;
+        try {
+            commandLine = new DefaultParser().parse(buildOptions(), args);
+        } catch (ParseException e) {
+            LOGGER.log(Level.SEVERE, null, e);
+            close();
+            return;
+        }
 
+        final String host = commandLine.getOptionValue(HOST_OPTION);
+
+        final String portValue = commandLine.getOptionValue(PORT_OPTION);
+        final int port;
+        try {
+            port = Integer.parseInt(portValue);
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.SEVERE, portValue, e);
+            close();
+            return;
+        }
+
+        try (
+                Socket socket = new Socket(host, port);
+                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(System.in))
+        ) {
+            String fromServer;
+            String fromInput;
+
+            while ((fromServer = reader.readLine()) != null) {
+                System.out.println(fromServer);
+
+                fromInput = in.readLine();
+                if (isNotBlank(fromInput))
+                    writer.println(fromInput);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, String.join(":", host, String.valueOf(port)), e);
+            close();
+        }
+    }
+
+    private static Options buildOptions() {
+        Options options = new Options();
+        options.addRequiredOption(HOST_OPTION, "host", true, "Server host");
+        options.addRequiredOption(PORT_OPTION, "port", true, "Server port");
+        return options;
+    }
+
+    private static void close() {
+        System.exit(EXIT_STATUS);
     }
 }
