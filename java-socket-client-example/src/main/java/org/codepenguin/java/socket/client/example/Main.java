@@ -55,6 +55,9 @@ public final class Main {
     private static final String PORT_OPTION = "p";
     private static final int EXIT_STATUS = 1;
 
+    private Main() {
+    }
+
     /**
      * Main method. Starts the client's socket connecting it to the specified host and port.
      *
@@ -92,11 +95,12 @@ public final class Main {
             String fromInput;
 
             while ((fromServer = reader.readLine()) != null) {
-                System.out.println(fromServer);
+                LOGGER.info(fromServer);
 
                 fromInput = in.readLine();
-                if (isNotBlank(fromInput))
+                if (isNotBlank(fromInput)) {
                     writer.println(fromInput);
+                }
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, String.join(":", host, String.valueOf(port)), e);

@@ -48,6 +48,11 @@ public final class Main {
 
     private static final String PORT_OPTION = "p";
     private static final int EXIT_STATUS = 1;
+    public static final String PORT_LONG_OPTION = "port";
+    public static final String SERVER_PORT_DESCRIPTION = "Server port";
+
+    private Main() {
+    }
 
     /**
      * Main method. Starts the socket's server in the specified port.
@@ -59,7 +64,7 @@ public final class Main {
         try {
             commandLine = new DefaultParser().parse(buildOptions(), args);
         } catch (ParseException e) {
-            LOGGER.log(Level.SEVERE, null, e);
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             close();
             return;
         }
@@ -77,9 +82,10 @@ public final class Main {
 
         try (ServerSocket server = new ServerSocket(port)) {
             LOGGER.info("START_SERVER\t" + port);
-            final volatile running =true;
-            while (running)
+            //noinspection InfiniteLoopStatement
+            while (true) {
                 new SocketServerThread(server.accept()).start();
+            }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, portValue, e);
             close();
@@ -90,7 +96,7 @@ public final class Main {
 
     private static Options buildOptions() {
         Options options = new Options();
-        options.addRequiredOption(PORT_OPTION, "port", true, "Server port");
+        options.addRequiredOption(PORT_OPTION, PORT_LONG_OPTION, true, SERVER_PORT_DESCRIPTION);
         return options;
     }
 

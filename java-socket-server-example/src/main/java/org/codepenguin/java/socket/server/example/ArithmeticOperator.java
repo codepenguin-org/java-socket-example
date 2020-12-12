@@ -75,9 +75,11 @@ enum ArithmeticOperator {
      * @throws IllegalArgumentException If the symbol isn't used by any supported operator.
      */
     static ArithmeticOperator valueOfSymbol(char symbol) {
-        for (ArithmeticOperator operator : values())
-            if (operator.getSymbol() == symbol)
+        for (ArithmeticOperator operator : values()) {
+            if (operator.getSymbol() == symbol) {
                 return operator;
+            }
+        }
 
         throw new IllegalArgumentException("No symbol in " + ArithmeticOperator.class.getCanonicalName() + ": " + symbol);
     }
