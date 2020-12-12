@@ -42,6 +42,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class BinaryOperationProtocolTest {
 
+    private static final String EXPECTED_RESPONSE_FORMAT = "OK\t%s\t%s";
+
     private static BinaryOperationProtocol protocol;
 
     @BeforeAll
@@ -119,7 +121,7 @@ class BinaryOperationProtocolTest {
         String result = "3";
         assertEquals(input + "\t" + result, response.getOkMessage());
         assertNull(response.getErrorType());
-        assertEquals("OK\t" + input + "\t" + result, response.toString());
+        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
     }
 
     @Test
@@ -132,7 +134,7 @@ class BinaryOperationProtocolTest {
         String result = "-1";
         assertEquals(input + "\t" + result, response.getOkMessage());
         assertNull(response.getErrorType());
-        assertEquals("OK\t" + input + "\t" + result, response.toString());
+        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
     }
 
     @Test
@@ -145,7 +147,7 @@ class BinaryOperationProtocolTest {
         String result = "2";
         assertEquals(input + "\t" + result, response.getOkMessage());
         assertNull(response.getErrorType());
-        assertEquals("OK\t" + input + "\t" + result, response.toString());
+        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
     }
 
     @Test
@@ -158,7 +160,7 @@ class BinaryOperationProtocolTest {
         String result = "0.5";
         assertEquals(input + "\t" + result, response.getOkMessage());
         assertNull(response.getErrorType());
-        assertEquals("OK\t" + input + "\t" + result, response.toString());
+        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
     }
 
     @Test

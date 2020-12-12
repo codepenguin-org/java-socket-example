@@ -77,8 +77,9 @@ class SocketServerThread extends Thread {
             String input;
             while ((input = reader.readLine()) != null) {
                 LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}", new Object[]{LOG_DELIMITER, INPUT, getName(), input});
-                if (input.equals(protocol.getExitCommand()))
+                if (input.equals(protocol.getExitCommand())) {
                     break;
+                }
 
                 BinaryOperationProtocol.Response response = protocol.process(input);
                 LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}{0}{4}", new Object[]{LOG_DELIMITER, OUTPUT, getName(), input,

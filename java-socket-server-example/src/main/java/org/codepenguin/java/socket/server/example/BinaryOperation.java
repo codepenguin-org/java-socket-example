@@ -42,16 +42,16 @@ final class BinaryOperation {
     private static final String PRINT_DELIMITER = " ";
     private static final String EQUALS = "=";
 
-    private final float firstOperand;
+    private final double firstOperand;
     private final ArithmeticOperator symbol;
-    private final float secondOperand;
+    private final double secondOperand;
 
     /**
      * Applies the operation.
      *
      * @return The result of the operation.
      */
-    float apply() {
+    double apply() {
         switch (symbol) {
             case ADDITION:
                 return firstOperand + secondOperand;

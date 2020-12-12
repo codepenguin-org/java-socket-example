@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import static java.lang.String.join;
 import static java.lang.String.valueOf;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.codepenguin.java.socket.server.example.NumberUtility.isInteger;
+import static org.codepenguin.java.socket.server.example.NumberUtils.isInteger;
 
 /**
  * Protocol for binary operations.
@@ -46,8 +46,9 @@ final class BinaryOperationProtocol {
     private static final String OPERATION_SEPARATOR = " ";
     private static final String EXIT_COMMAND = "QUIT";
     private static final String PROTOCOL_SEPARATOR = "\t";
-    public static final String APP_NAME = "Binary Operation Server";
-    public static final String APP_VERSION = "v.1.0-SNAPSHOT";
+    private static final String APP_NAME = "Binary Operation Server";
+    private static final String APP_VERSION = "v.1.0-SNAPSHOT";
+    private static final int INPUT_EXPECTED_LENGTH = 3;
 
     /**
      * Processes the input.
@@ -56,15 +57,18 @@ final class BinaryOperationProtocol {
      * @return Response of the process.
      */
     Response process(final String input) {
-        if (input == null)
+        if (input == null) {
             return new Response(ResponseErrorType.INPUT_IS_NULL);
+        }
 
-        if (isBlank(input))
+        if (isBlank(input)) {
             return new Response(ResponseErrorType.INPUT_IS_BLANK);
+        }
 
         final String[] split = input.split(OPERATION_SEPARATOR);
-        if (split.length != 3)
+        if (split.length != INPUT_EXPECTED_LENGTH) {
             return new Response(ResponseErrorType.INPUT_MUST_HAVE_THREE_PARTS_ONLY);
+        }
 
         float firstOperand;
         try {
@@ -74,8 +78,9 @@ final class BinaryOperationProtocol {
             return new Response(ResponseErrorType.INPUT_FIRST_OPERAND_IS_NOT_A_NUMBER);
         }
 
-        if (split[1].length() != 1)
+        if (split[1].length() != 1) {
             return new Response(ResponseErrorType.INPUT_OPERATOR_IS_NOT_VALID);
+        }
 
         char symbol = split[1].charAt(0);
 
@@ -128,7 +133,7 @@ final class BinaryOperationProtocol {
         return format(operation.apply());
     }
 
-    private String format(float f) {
+    private String format(double f) {
         return isInteger(f) ? valueOf((int) f) : valueOf(f);
     }
 
@@ -199,10 +204,11 @@ final class BinaryOperationProtocol {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder(valueOf(getType())).append(PROTOCOL_SEPARATOR);
-            if (getType().equals(ResponseType.OK))
+            if (getType().equals(ResponseType.OK)) {
                 builder.append(getOkMessage());
-            else
+            } else {
                 builder.append(getErrorType());
+            }
             return builder.toString();
         }
     }

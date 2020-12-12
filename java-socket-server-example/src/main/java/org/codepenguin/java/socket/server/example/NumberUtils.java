@@ -25,27 +25,29 @@
 
 package org.codepenguin.java.socket.server.example;
 
-import org.junit.jupiter.api.Test;
+import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
 
 /**
- * Unit test for {@link NumberUtility}.
+ * Utility for numbers.
  *
  * @author Jorge Alfonso Garcia Espinosa
  * @version 1.0-SNAPSHOT
  * @since 1.8
  */
-class NumberUtilityTest {
+final class NumberUtils {
+    private NumberUtils() {
+    }
 
-    @Test
-    void isInteger() {
-        assertTrue(NumberUtility.isInteger(0));
-        assertTrue(NumberUtility.isInteger(254));
-        assertTrue(NumberUtility.isInteger(59D));
-        assertTrue(NumberUtility.isInteger(54F));
-
-        assertFalse(NumberUtility.isInteger(874.14));
-        assertFalse(NumberUtility.isInteger(24.78));
+    /**
+     * Indicates if a number is an integer.
+     *
+     * @param number The number.
+     * @return {@literal true} if the number is an integer; otherwise, {@literal false}.
+     */
+    static boolean isInteger(final Number number) {
+        return BigDecimal.valueOf(number.floatValue()).remainder(ONE).doubleValue() == ZERO.doubleValue();
     }
 }
