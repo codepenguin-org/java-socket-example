@@ -12,5 +12,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <sonar.projectKey>java-socket-client-example</sonar.projectKey>
+        <sonar.organization>codepenguin-org</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 </project>
