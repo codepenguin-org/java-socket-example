@@ -30,6 +30,9 @@ import java.util.logging.Logger;
 import static java.lang.String.join;
 import static java.lang.String.valueOf;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.codepenguin.java.socket.server.example.BinaryOperationProtocol.ResponseErrorType.*;
+import static org.codepenguin.java.socket.server.example.BinaryOperationProtocol.ResponseType.ERR;
+import static org.codepenguin.java.socket.server.example.BinaryOperationProtocol.ResponseType.OK;
 import static org.codepenguin.java.socket.server.example.NumberUtils.isInteger;
 
 /**
@@ -58,16 +61,16 @@ final class BinaryOperationProtocol {
      */
     Response process(final String input) {
         if (input == null) {
-            return new Response(ResponseErrorType.INPUT_IS_NULL);
+            return new Response(INPUT_IS_NULL);
         }
 
         if (isBlank(input)) {
-            return new Response(ResponseErrorType.INPUT_IS_BLANK);
+            return new Response(INPUT_IS_BLANK);
         }
 
         final String[] split = input.split(OPERATION_SEPARATOR);
         if (split.length != INPUT_EXPECTED_LENGTH) {
-            return new Response(ResponseErrorType.INPUT_MUST_HAVE_THREE_PARTS_ONLY);
+            return new Response(INPUT_MUST_HAVE_THREE_PARTS_ONLY);
         }
 
         float firstOperand;
@@ -75,11 +78,11 @@ final class BinaryOperationProtocol {
             firstOperand = Float.parseFloat(split[0]);
         } catch (NumberFormatException e) {
             LOGGER.warning(e.getMessage());
-            return new Response(ResponseErrorType.INPUT_FIRST_OPERAND_IS_NOT_A_NUMBER);
+            return new Response(INPUT_FIRST_OPERAND_IS_NOT_A_NUMBER);
         }
 
         if (split[1].length() != 1) {
-            return new Response(ResponseErrorType.INPUT_OPERATOR_IS_NOT_VALID);
+            return new Response(INPUT_OPERATOR_IS_NOT_VALID);
         }
 
         char symbol = split[1].charAt(0);
@@ -89,7 +92,7 @@ final class BinaryOperationProtocol {
             operator = ArithmeticOperator.valueOfSymbol(symbol);
         } catch (IllegalArgumentException e) {
             LOGGER.warning(e.getMessage());
-            return new Response(ResponseErrorType.INPUT_OPERATOR_IS_NOT_VALID);
+            return new Response(INPUT_OPERATOR_IS_NOT_VALID);
         }
 
         float secondOperator;
@@ -97,13 +100,11 @@ final class BinaryOperationProtocol {
             secondOperator = Float.parseFloat(split[2]);
         } catch (NumberFormatException e) {
             LOGGER.warning(e.getMessage());
-            return new Response(ResponseErrorType.INPUT_SECOND_OPERAND_IS_NOT_A_NUMBER);
+            return new Response(INPUT_SECOND_OPERAND_IS_NOT_A_NUMBER);
         }
 
         BinaryOperation operation = new BinaryOperation(firstOperand, operator, secondOperator);
-        final String result = formatOperation(operation) + PROTOCOL_SEPARATOR + formatResult(operation);
-
-        return new Response(result);
+        return new Response(formatOperation(operation) + PROTOCOL_SEPARATOR + formatResult(operation));
     }
 
     /**
@@ -158,7 +159,7 @@ final class BinaryOperationProtocol {
         Response(String okMessage) {
             this.okMessage = okMessage;
 
-            type = ResponseType.OK;
+            type = OK;
             errorType = null;
         }
 
@@ -170,7 +171,7 @@ final class BinaryOperationProtocol {
         Response(ResponseErrorType errorType) {
             this.errorType = errorType;
 
-            type = ResponseType.ERR;
+            type = ERR;
             okMessage = null;
         }
 
@@ -203,13 +204,7 @@ final class BinaryOperationProtocol {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder(valueOf(getType())).append(PROTOCOL_SEPARATOR);
-            if (getType().equals(ResponseType.OK)) {
-                builder.append(getOkMessage());
-            } else {
-                builder.append(getErrorType());
-            }
-            return builder.toString();
+            return getType() + PROTOCOL_SEPARATOR + (getType().equals(OK) ? getOkMessage() : getErrorType());
         }
     }
 

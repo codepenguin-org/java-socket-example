@@ -65,10 +65,8 @@ class SocketServerThread extends Thread {
 
     @Override
     public void run() {
-        try (
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-        ) {
+        try (PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             LOGGER.log(Level.INFO, "{1}{0}{2}", new Object[]{LOG_DELIMITER, START_CLIENT_SESSION, getName()});
 
             final BinaryOperationProtocol protocol = new BinaryOperationProtocol();
@@ -82,8 +80,8 @@ class SocketServerThread extends Thread {
                 }
 
                 BinaryOperationProtocol.Response response = protocol.process(input);
-                LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}{0}{4}", new Object[]{LOG_DELIMITER, OUTPUT, getName(), input,
-                        response});
+                LOGGER.log(Level.INFO, "{1}{0}{2}{0}{3}{0}{4}", new Object[]{LOG_DELIMITER, OUTPUT, getName(),
+                        input, response});
                 writer.println(response);
             }
         } catch (IOException e) {

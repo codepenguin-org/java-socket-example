@@ -25,8 +25,12 @@
 
 package org.codepenguin.java.socket.server.example;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.codepenguin.java.socket.server.example.BinaryOperationProtocol.ResponseErrorType.*;
 import static org.codepenguin.java.socket.server.example.BinaryOperationProtocol.ResponseType.ERR;
@@ -44,15 +48,16 @@ class BinaryOperationProtocolTest {
 
     private static final String EXPECTED_RESPONSE_FORMAT = "OK\t%s\t%s";
 
-    private static BinaryOperationProtocol protocol;
+    private final BinaryOperationProtocol protocol = new BinaryOperationProtocol();
 
-    @BeforeAll
-    static void setUp() {
-        protocol = new BinaryOperationProtocol();
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Stream<Arguments> provideProcessSuccess() {
+        return Stream.of(Arguments.of("1 + 2", "3"), Arguments.of("1 - 2", "-1"), Arguments.of("1 * 2", "2"),
+                Arguments.of("1 / 2", "0.5"));
     }
 
     @Test
-    void processNull() {
+    void processWhenInputNullReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process(null);
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -62,7 +67,7 @@ class BinaryOperationProtocolTest {
     }
 
     @Test
-    void processBlank() {
+    void processWhenInputBlankReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process("     ");
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -72,7 +77,7 @@ class BinaryOperationProtocolTest {
     }
 
     @Test
-    void processParts() {
+    void processWhenInputWithMoreThan3PartsReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process(" 2 + 3 + 4");
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -82,7 +87,7 @@ class BinaryOperationProtocolTest {
     }
 
     @Test
-    void processFirstOperand() {
+    void processWhenFirstOperandNotANumberReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process("a + 2");
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -92,7 +97,7 @@ class BinaryOperationProtocolTest {
     }
 
     @Test
-    void processOperator() {
+    void processWhenOperatorNotValidReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process("1 ? 2");
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -102,7 +107,17 @@ class BinaryOperationProtocolTest {
     }
 
     @Test
-    void processSecondOperator() {
+    void processWhenOperatorWithLengthGreaterThan1ReturnsError() {
+        BinaryOperationProtocol.Response response = protocol.process("1 +- 2");
+        assertNotNull(response);
+        assertEquals(ERR, response.getType());
+        assertEquals(INPUT_OPERATOR_IS_NOT_VALID, response.getErrorType());
+        assertNull(response.getOkMessage());
+        assertEquals("ERR\tINPUT_OPERATOR_IS_NOT_VALID", response.toString());
+    }
+
+    @Test
+    void processWhenSecondOperatorNotANumberReturnsError() {
         BinaryOperationProtocol.Response response = protocol.process("1 + b");
         assertNotNull(response);
         assertEquals(ERR, response.getType());
@@ -111,60 +126,25 @@ class BinaryOperationProtocolTest {
         assertEquals("ERR\tINPUT_SECOND_OPERAND_IS_NOT_A_NUMBER", response.toString());
     }
 
-    @Test
-    void processAddition() {
-        String input = "1 + 2";
+    @ParameterizedTest
+    @MethodSource("provideProcessSuccess")
+    void processSuccess(String input, String result) {
         BinaryOperationProtocol.Response response = protocol.process(input);
         assertNotNull(response);
         assertEquals(OK, response.getType());
 
-        String result = "3";
         assertEquals(input + "\t" + result, response.getOkMessage());
         assertNull(response.getErrorType());
         assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
     }
 
     @Test
-    void processSubtraction() {
-        String input = "1 - 2";
-        BinaryOperationProtocol.Response response = protocol.process(input);
-        assertNotNull(response);
-        assertEquals(OK, response.getType());
-
-        String result = "-1";
-        assertEquals(input + "\t" + result, response.getOkMessage());
-        assertNull(response.getErrorType());
-        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
-    }
-
-    @Test
-    void processMultiplication() {
-        String input = "1 * 2";
-        BinaryOperationProtocol.Response response = protocol.process(input);
-        assertNotNull(response);
-        assertEquals(OK, response.getType());
-
-        String result = "2";
-        assertEquals(input + "\t" + result, response.getOkMessage());
-        assertNull(response.getErrorType());
-        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
-    }
-
-    @Test
-    void processDivision() {
-        String input = "1 / 2";
-        BinaryOperationProtocol.Response response = protocol.process(input);
-        assertNotNull(response);
-        assertEquals(OK, response.getType());
-
-        String result = "0.5";
-        assertEquals(input + "\t" + result, response.getOkMessage());
-        assertNull(response.getErrorType());
-        assertEquals(String.format(EXPECTED_RESPONSE_FORMAT, input, result), response.toString());
-    }
-
-    @Test
-    void exitCommand() {
+    void getExitCommandSuccess() {
         assertEquals("QUIT", protocol.getExitCommand());
+    }
+
+    @Test
+    void getWelcomeMessageSuccess() {
+        assertTrue(protocol.getWelcomeMessage().startsWith("Binary Operation Server\tv."));
     }
 }

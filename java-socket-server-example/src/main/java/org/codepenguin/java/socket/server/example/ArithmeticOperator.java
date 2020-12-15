@@ -25,6 +25,8 @@
 
 package org.codepenguin.java.socket.server.example;
 
+import java.text.MessageFormat;
+
 /**
  * Arithmetic operator.
  *
@@ -81,6 +83,7 @@ enum ArithmeticOperator {
             }
         }
 
-        throw new IllegalArgumentException("No symbol in " + ArithmeticOperator.class.getCanonicalName() + ": " + symbol);
+        throw new IllegalArgumentException(MessageFormat.format("No symbol in {0}: {1}",
+                ArithmeticOperator.class.getCanonicalName(), symbol));
     }
 }

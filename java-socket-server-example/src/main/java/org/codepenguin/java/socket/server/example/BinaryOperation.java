@@ -28,6 +28,8 @@ package org.codepenguin.java.socket.server.example;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.text.MessageFormat;
+
 /**
  * Binary operation.
  *
@@ -38,9 +40,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 final class BinaryOperation {
-
-    private static final String PRINT_DELIMITER = " ";
-    private static final String EQUALS = "=";
 
     private final double firstOperand;
     private final ArithmeticOperator symbol;
@@ -61,7 +60,8 @@ final class BinaryOperation {
                 return firstOperand * secondOperand;
             case DIVISION:
                 return firstOperand / secondOperand;
+            default:
+                throw new IllegalStateException(MessageFormat.format("Unexpected value: {0}", symbol));
         }
-        throw new AssertionError("Unknown symbol: " + symbol);
     }
 }

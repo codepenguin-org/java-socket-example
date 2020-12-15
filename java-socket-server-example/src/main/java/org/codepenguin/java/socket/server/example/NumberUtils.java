@@ -38,6 +38,52 @@ import static java.math.BigDecimal.ZERO;
  * @since 1.8
  */
 final class NumberUtils {
+
+    /**
+     * Integer 0.
+     */
+    static final int INT_0 = 0;
+
+    /**
+     * Integer 1.
+     */
+    static final int INT_1 = 1;
+
+    /**
+     * Integer 3.
+     */
+    static final int INT_3 = 3;
+
+    /**
+     * Integer 4.
+     */
+    static final int INT_4 = 4;
+
+    /**
+     * Integer 5.
+     */
+    static final int INT_5 = 5;
+
+    /**
+     * Integer 6.
+     */
+    static final int INT_6 = 6;
+
+    /**
+     * Integer 7.
+     */
+    static final int INT_7 = 7;
+
+    /**
+     * Integer 12.
+     */
+    static final int INT_12 = 12;
+
+    /**
+     * Integer 30.
+     */
+    static final int INT_30 = 30;
+
     private NumberUtils() {
     }
 
