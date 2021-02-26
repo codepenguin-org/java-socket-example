@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,12 +86,10 @@ public final class Main {
             return;
         }
 
-        try (
-                Socket socket = new Socket(host, port);
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedReader in = new BufferedReader(new InputStreamReader(System.in))
-        ) {
+        try (Socket socket = new Socket(host, port);
+             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
             String fromServer;
             String fromInput;
 
@@ -103,16 +102,14 @@ public final class Main {
                 }
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, String.join(":", host, String.valueOf(port)), e);
+            LOGGER.log(Level.SEVERE, e, () -> MessageFormat.format("{0}:{1}", host, port));
             close();
         }
     }
 
     private static Options buildOptions() {
-        Options options = new Options();
-        options.addRequiredOption(HOST_OPTION, "host", true, "Server host");
-        options.addRequiredOption(PORT_OPTION, "port", true, "Server port");
-        return options;
+        return new Options().addRequiredOption(HOST_OPTION, "host", true, "Server host")
+                .addRequiredOption(PORT_OPTION, "port", true, "Server port");
     }
 
     private static void close() {

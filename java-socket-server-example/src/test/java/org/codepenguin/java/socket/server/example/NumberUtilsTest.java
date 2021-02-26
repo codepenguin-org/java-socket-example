@@ -27,6 +27,7 @@ package org.codepenguin.java.socket.server.example;
 
 import org.junit.jupiter.api.Test;
 
+import static org.codepenguin.java.socket.server.example.NumberUtils.INT_0;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -38,14 +39,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class NumberUtilsTest {
 
+    private static final int INTEGER = 254;
+    private static final double INTEGER_AS_DOUBLE = 59D;
+    private static final float INTEGER_AS_FLOAT = 54F;
+    private static final double DOUBLE = 874.14;
+
     @Test
     void isInteger() {
-        assertTrue(NumberUtils.isInteger(0));
-        assertTrue(NumberUtils.isInteger(254));
-        assertTrue(NumberUtils.isInteger(59D));
-        assertTrue(NumberUtils.isInteger(54F));
+        assertTrue(NumberUtils.isInteger(INT_0));
+        assertTrue(NumberUtils.isInteger(INTEGER));
+        assertTrue(NumberUtils.isInteger(INTEGER_AS_DOUBLE));
+        assertTrue(NumberUtils.isInteger(INTEGER_AS_FLOAT));
 
-        assertFalse(NumberUtils.isInteger(874.14));
-        assertFalse(NumberUtils.isInteger(24.78));
+        assertFalse(NumberUtils.isInteger(DOUBLE));
     }
 }

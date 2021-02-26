@@ -32,6 +32,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,10 +47,12 @@ public final class Main {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+    private static final AtomicBoolean KEEP_GOING = new AtomicBoolean(true);
+
     private static final String PORT_OPTION = "p";
+    private static final String PORT_LONG_OPTION = "port";
+    private static final String SERVER_PORT_DESCRIPTION = "Server port";
     private static final int EXIT_STATUS = 1;
-    public static final String PORT_LONG_OPTION = "port";
-    public static final String SERVER_PORT_DESCRIPTION = "Server port";
 
     private Main() {
     }
@@ -81,23 +84,20 @@ public final class Main {
         }
 
         try (ServerSocket server = new ServerSocket(port)) {
-            LOGGER.info("START_SERVER\t" + port);
-            //noinspection InfiniteLoopStatement
-            while (true) {
+            LOGGER.log(Level.INFO, "START_SERVER\t{0}", port);
+            while (KEEP_GOING.get()) {
                 new SocketServerThread(server.accept()).start();
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, portValue, e);
             close();
         } finally {
-            LOGGER.info("STOP_SERVER\t" + port);
+            LOGGER.log(Level.INFO, "STOP_SERVER\t{0}", port);
         }
     }
 
     private static Options buildOptions() {
-        Options options = new Options();
-        options.addRequiredOption(PORT_OPTION, PORT_LONG_OPTION, true, SERVER_PORT_DESCRIPTION);
-        return options;
+        return new Options().addRequiredOption(PORT_OPTION, PORT_LONG_OPTION, true, SERVER_PORT_DESCRIPTION);
     }
 
     private static void close() {
